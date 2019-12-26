@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Validator;
 use Importer;
+use Exporter;
+use Illuminate\Support\Collection;
 
 class TestController extends Controller
 {
@@ -92,5 +94,30 @@ class TestController extends Controller
         } else {
             return back()->with(['errors' => $validator->errors()->all()]);
         }
+    }
+
+    
+
+    public function export()
+    {
+        $users = new User();
+        $columns = $users->getTableColumns();
+        $users = $users->getAll();
+        
+        $data = new Collection();
+        foreach ($columns as $column) {
+            $data[0] = (object) $column;
+        }
+        $data = $data->merge($users);
+        
+        $fileName = 'Users.xlsx';
+        $saveFile = public_path('/excel/donwload/' . $fileName);
+        $excel = Exporter::make('Excel');
+        $excel->load($data);
+        $excel->save($saveFile);
+        $url = url('/excel/donwload/'. $fileName);
+        $html = '<a href="'.$url.'" id="download" hidden></a>';
+        $html .= "<script>document.getElementById('download').click()</script>";
+        return $html;
     }
 }
