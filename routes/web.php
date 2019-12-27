@@ -58,6 +58,9 @@ Route::get('/session', 'Test\TestController@session');
 Route::get('/import', 'Test\TestController@import');
 Route::post('/import', 'Test\TestController@importExcel');
 
+Route::get('/export', 'Test\TestController@export');
+Route::post('/export', 'Test\TestController@exportExcel');
+
 Route::get('/profile', 'User\UserController@profile');
 Route::post('/profile', 'User\UserController@profileImage');
 

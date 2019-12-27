@@ -65,5 +65,33 @@ class User extends Authenticatable
             ->first();
     }
 
+    // export laravel 
+    public function getTableColumns()
+    {
+        $query = "SELECT column_name
+                FROM information_schema.columns
+                WHERE table_name = 'users'
+                AND table_schema = 'auth_sentinel'";
+        
+        $result = DB::select($query);
+        $result = $this->transposeData($result);
+        return $result;
+    }
+
+    public function transposeData($data)
+    {
+        $result = array();
+        foreach ($data as $row => $columns) {
+            foreach ($columns as $row2 => $column2) {
+                $result[$row2][$row] = $column2;
+            }
+        }
+        return $result;
+    }
+
+    public function getAll()
+    {
+        return collect(DB::select('select * from '. $this->getTable()));
+    }
    
 }
